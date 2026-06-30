@@ -3,36 +3,512 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hasaany Store - المتجر الاحترافي</title>
+    <title>Hasaany Store - متجر التطبيقات</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
     <style>
-        body { background: #0f172a; color: white; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
-        .card { background: #1e293b; padding: 2rem; border-radius: 20px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border: 1px solid #334155; width: 80%; max-width: 400px; }
-        img { width: 120px; height: 120px; border-radius: 20px; margin-bottom: 20px; border: 3px solid #3b82f6; }
-        .btn { display: block; background: #3b82f6; color: white; padding: 15px; border-radius: 12px; text-decoration: none; font-weight: bold; margin-top: 20px; transition: 0.3s; }
-        .btn:hover { background: #2563eb; }
-        .channel { color: #94a3b8; margin-top: 20px; font-size: 0.9rem; }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-deep:    #04060f;
+            --bg-card:    #080d1c;
+            --blue-neon:  #4f8fff;
+            --blue-glow:  #2060d8;
+            --purple:     #7c3aed;
+            --cyan:       #06b6d4;
+            --gold:       #f59e0b;
+            --text-main:  #e2e8f0;
+            --text-dim:   #64748b;
+            --border:     rgba(79,143,255,0.15);
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Tajawal', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ── BACKGROUND GRID & GLOW ── */
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(79,143,255,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(79,143,255,0.04) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .bg-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .orb-1 { width: 600px; height: 600px; background: rgba(79,143,255,0.08); top: -200px; right: -200px; }
+        .orb-2 { width: 500px; height: 500px; background: rgba(124,58,237,0.06); bottom: -150px; left: -150px; }
+        .orb-3 { width: 300px; height: 300px; background: rgba(6,182,212,0.05); top: 40%; left: 50%; transform: translateX(-50%); }
+
+        /* ── LAYOUT ── */
+        .wrapper {
+            position: relative;
+            z-index: 1;
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 2rem 1.25rem 4rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        /* ── TOP NAV BADGE ── */
+        .top-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(79,143,255,0.08);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 0.4rem 1rem;
+            font-size: 0.78rem;
+            color: var(--blue-neon);
+            letter-spacing: 0.05em;
+            animation: fadeDown 0.6s ease both;
+        }
+        .top-badge .dot {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 8px #22c55e;
+            animation: pulse 2s infinite;
+        }
+
+        /* ── HERO LOGO ── */
+        .hero-logo-wrap {
+            position: relative;
+            animation: fadeDown 0.7s 0.1s ease both;
+        }
+        .logo-ring {
+            position: absolute;
+            inset: -12px;
+            border-radius: 30px;
+            border: 1.5px solid transparent;
+            background: linear-gradient(135deg, var(--blue-neon), var(--purple), var(--cyan)) border-box;
+            -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: destination-out;
+            mask-composite: exclude;
+            animation: rotateBorder 4s linear infinite;
+        }
+        @keyframes rotateBorder {
+            0%   { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+        .logo-ring-2 {
+            position: absolute;
+            inset: -24px;
+            border-radius: 38px;
+            border: 1px solid rgba(79,143,255,0.12);
+        }
+        .logo-glow {
+            position: absolute;
+            inset: -8px;
+            border-radius: 26px;
+            background: linear-gradient(135deg, rgba(79,143,255,0.2), rgba(124,58,237,0.2));
+            filter: blur(20px);
+        }
+        .logo-img {
+            position: relative;
+            width: 110px;
+            height: 110px;
+            border-radius: 22px;
+            display: block;
+            object-fit: cover;
+        }
+        .logo-badge-wrap {
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--blue-neon), var(--purple));
+            border-radius: 20px;
+            padding: 3px 10px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            white-space: nowrap;
+            letter-spacing: 0.08em;
+            box-shadow: 0 4px 15px rgba(79,143,255,0.4);
+        }
+
+        /* ── TITLE BLOCK ── */
+        .title-block {
+            text-align: center;
+            animation: fadeUp 0.7s 0.2s ease both;
+        }
+        .title-block h1 {
+            font-size: 2.2rem;
+            font-weight: 900;
+            line-height: 1.15;
+            background: linear-gradient(135deg, #fff 30%, var(--blue-neon) 70%, var(--cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+        .title-block p {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            font-weight: 400;
+            line-height: 1.6;
+        }
+
+        /* ── STATS ROW ── */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+            width: 100%;
+            animation: fadeUp 0.7s 0.3s ease both;
+        }
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 0.9rem 0.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.3s, transform 0.3s;
+        }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(79,143,255,0.05), transparent);
+            pointer-events: none;
+        }
+        .stat-card:hover { border-color: rgba(79,143,255,0.4); transform: translateY(-2px); }
+        .stat-num {
+            font-size: 1.4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--blue-neon), var(--cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: block;
+        }
+        .stat-label {
+            font-size: 0.72rem;
+            color: var(--text-dim);
+            margin-top: 2px;
+            display: block;
+        }
+
+        /* ── FEATURES ── */
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            width: 100%;
+            animation: fadeUp 0.7s 0.4s ease both;
+        }
+        .feat {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .feat::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--blue-neon), var(--purple));
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s;
+        }
+        .feat:hover::after { transform: scaleX(1); transform-origin: left; }
+        .feat:hover { border-color: rgba(79,143,255,0.3); transform: translateY(-2px); }
+        .feat-icon {
+            width: 36px; height: 36px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .feat-icon.blue   { background: rgba(79,143,255,0.12); }
+        .feat-icon.purple { background: rgba(124,58,237,0.12); }
+        .feat-icon.cyan   { background: rgba(6,182,212,0.12); }
+        .feat-icon.gold   { background: rgba(245,158,11,0.12); }
+        .feat-text strong { display: block; font-size: 0.8rem; font-weight: 700; color: #fff; margin-bottom: 2px; }
+        .feat-text span   { font-size: 0.72rem; color: var(--text-dim); line-height: 1.4; }
+
+        /* ── INSTALL BUTTON ── */
+        .install-wrap {
+            width: 100%;
+            animation: fadeUp 0.7s 0.5s ease both;
+        }
+        .btn-install {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            width: 100%;
+            padding: 1.1rem 1.5rem;
+            border-radius: 16px;
+            text-decoration: none;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--blue-glow), var(--purple));
+            box-shadow:
+                0 0 0 1px rgba(79,143,255,0.3),
+                0 10px 40px rgba(79,143,255,0.25),
+                0 4px 15px rgba(124,58,237,0.2);
+            transition: all 0.3s;
+        }
+        .btn-install::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent 60%);
+            pointer-events: none;
+        }
+        .btn-install:hover {
+            transform: translateY(-3px) scale(1.01);
+            box-shadow:
+                0 0 0 1px rgba(79,143,255,0.5),
+                0 20px 60px rgba(79,143,255,0.35),
+                0 8px 25px rgba(124,58,237,0.3);
+        }
+        .btn-install:active { transform: scale(0.98); }
+        .btn-install .btn-icon { font-size: 1.4rem; }
+        .btn-install .btn-sub { font-size: 0.72rem; opacity: 0.75; font-weight: 400; }
+
+        /* shimmer sweep */
+        .btn-install::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 60%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+            animation: shimmer 3s infinite;
+        }
+        @keyframes shimmer { to { left: 200%; } }
+
+        /* ── SECONDARY BUTTON ── */
+        .btn-telegram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            width: 100%;
+            margin-top: 0.75rem;
+            padding: 0.85rem 1.5rem;
+            border-radius: 14px;
+            text-decoration: none;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--blue-neon);
+            background: rgba(79,143,255,0.06);
+            border: 1px solid rgba(79,143,255,0.2);
+            transition: all 0.3s;
+        }
+        .btn-telegram:hover {
+            background: rgba(79,143,255,0.12);
+            border-color: rgba(79,143,255,0.4);
+            color: #fff;
+        }
+        .tg-icon { font-size: 1.2rem; }
+
+        /* ── DIVIDER ── */
+        .divider {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            animation: fadeUp 0.7s 0.45s ease both;
+        }
+        .divider-line { flex: 1; height: 1px; background: var(--border); }
+        .divider-text { font-size: 0.75rem; color: var(--text-dim); white-space: nowrap; }
+
+        /* ── BOTTOM NOTE ── */
+        .bottom-note {
+            text-align: center;
+            animation: fadeUp 0.7s 0.6s ease both;
+        }
+        .bottom-note p {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            line-height: 1.8;
+        }
+        .bottom-note a { color: var(--blue-neon); text-decoration: none; }
+        .bottom-note a:hover { text-decoration: underline; }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0.4; }
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 360px) {
+            .title-block h1 { font-size: 1.8rem; }
+            .features-grid  { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
-    <div class="card">
-        <img src="https://a.top4top.io/p_38337brtb0.jpeg" alt="Logo">
-        <h2>Hasaany Store</h2>
-        <p>التطبيق الموثوق للتحميل المباشر</p>
-        
-        <a href="https://github.com/husszzzz/HasaanyPROMAX/raw/refs/heads/main/hassanyIPA_1.0_1782848953.ipa" 
-           class="btn" onclick="openChannel()">تثبيت التطبيق الآن</a>
-        
-        <div class="channel">قناة التليجرام: @hasaanyIPA</div>
+
+<div class="bg-grid"></div>
+<div class="bg-orb orb-1"></div>
+<div class="bg-orb orb-2"></div>
+<div class="bg-orb orb-3"></div>
+
+<div class="wrapper">
+
+    <!-- Status Badge -->
+    <div class="top-badge">
+        <span class="dot"></span>
+        متاح الآن للتحميل
     </div>
 
-    <script>
-        function openChannel() {
-            // يبدأ التحميل تلقائياً
-            // ثم يفتح القناة في تبويب جديد بعد ثانية
-            setTimeout(function() {
-                window.open('https://t.me/hasaanyIPA', '_blank');
-            }, 1000);
-        }
-    </script>
+    <!-- Logo -->
+    <div class="hero-logo-wrap">
+        <div class="logo-ring-2"></div>
+        <div class="logo-glow"></div>
+        <div class="logo-ring"></div>
+        <img class="logo-img" src="https://a.top4top.io/p_38337brtb0.jpeg" alt="Hasaany Store Logo">
+        <div class="logo-badge-wrap">✦ TRUSTED STORE</div>
+    </div>
+
+    <!-- Title -->
+    <div class="title-block">
+        <h1>Hasaany Store</h1>
+        <p>متجر التطبيقات الاحترافي الموثوق<br>تثبيت سريع وآمن بضغطة واحدة</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+        <div class="stat-card">
+            <span class="stat-num">+10K</span>
+            <span class="stat-label">مستخدم نشط</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-num">100%</span>
+            <span class="stat-label">موثوقية</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-num">مجاني</span>
+            <span class="stat-label">بالكامل</span>
+        </div>
+    </div>
+
+    <!-- Features -->
+    <div class="features-grid">
+        <div class="feat">
+            <div class="feat-icon blue">⚡</div>
+            <div class="feat-text">
+                <strong>تثبيت فوري</strong>
+                <span>بدون انتظار أو تعقيدات</span>
+            </div>
+        </div>
+        <div class="feat">
+            <div class="feat-icon purple">🔒</div>
+            <div class="feat-text">
+                <strong>آمن 100%</strong>
+                <span>مفحوص ومعتمد</span>
+            </div>
+        </div>
+        <div class="feat">
+            <div class="feat-icon cyan">🔄</div>
+            <div class="feat-text">
+                <strong>تحديثات مستمرة</strong>
+                <span>أحدث إصدار دائماً</span>
+            </div>
+        </div>
+        <div class="feat">
+            <div class="feat-icon gold">🌟</div>
+            <div class="feat-text">
+                <strong>دعم متواصل</strong>
+                <span>فريق جاهز للمساعدة</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="install-wrap">
+        <a href="https://github.com/husszzzz/HasaanyPROMAX/raw/refs/heads/main/hassanyIPA_1.0_1782848953.ipa"
+           class="btn-install" onclick="openChannel()">
+            <span class="btn-icon">📲</span>
+            <span>
+                تثبيت التطبيق الآن
+                <br>
+                <span class="btn-sub">اضغط للتحميل المباشر</span>
+            </span>
+        </a>
+
+        <div class="divider" style="margin-top:0.9rem;">
+            <div class="divider-line"></div>
+            <div class="divider-text">أو تابعنا على</div>
+            <div class="divider-line"></div>
+        </div>
+
+        <a href="https://t.me/hasaanyIPA" target="_blank" class="btn-telegram">
+            <span class="tg-icon">✈️</span>
+            انضم لقناة التليجرام @hasaanyIPA
+        </a>
+    </div>
+
+    <!-- Bottom Note -->
+    <div class="bottom-note">
+        <p>
+            🔐 جميع الملفات مفحوصة وآمنة<br>
+            للاستفسار والدعم: <a href="https://t.me/hasaanyIPA">@hasaanyIPA</a>
+        </p>
+    </div>
+
+</div>
+
+<script>
+    function openChannel() {
+        setTimeout(function () {
+            window.open('https://t.me/hasaanyIPA', '_blank');
+        }, 1000);
+    }
+
+    // Subtle parallax on orbs with mouse
+    document.addEventListener('mousemove', function(e) {
+        const x = (e.clientX / window.innerWidth - 0.5) * 30;
+        const y = (e.clientY / window.innerHeight - 0.5) * 30;
+        document.querySelector('.orb-1').style.transform = `translate(${x * 0.4}px, ${y * 0.4}px)`;
+        document.querySelector('.orb-2').style.transform = `translate(${-x * 0.3}px, ${-y * 0.3}px)`;
+    });
+</script>
+
 </body>
 </html>
